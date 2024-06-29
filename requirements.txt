@@ -3,3 +3,6 @@ langchain
 openai
 chromadb
 langchain-community
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp
