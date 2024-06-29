@@ -1,8 +1,9 @@
 import streamlit as st
 import openai
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores.faiss import FAISS
-from langchain.llms import OpenAI
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.llms import OpenAI
+from langchain.docstore.document import Document
 
 # Function to generate responses using RAG
 def generate_response(documents, api_key):
@@ -39,7 +40,7 @@ if uploaded_file and openai_api_key:
     
     # Read the file
     content = uploaded_file.read().decode("utf-8")
-    documents = [langchain.docstore.Document(page_content=content, metadata={"filename": uploaded_file.name})]
+    documents = [Document(page_content=content, metadata={"filename": uploaded_file.name})]
     
     if st.button("Generate Response"):
         with st.spinner("Calculating..."):
