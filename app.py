@@ -1,10 +1,10 @@
 import streamlit as st
 import openai
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.llms import OpenAI
 from langchain.docstore.document import Document
-from langchain_community.chains import QA
+from langchain.chains.qa import load_qa_chain
 
 # Function to generate responses using RAG
 def generate_response(documents, api_key):
@@ -21,7 +21,7 @@ def generate_response(documents, api_key):
     
     # Create QA chain
     llm = OpenAI(api_key=api_key)
-    qa_chain = QA(llm=llm, retriever=retriever)
+    qa_chain = load_qa_chain(llm, retriever=retriever)
     
     # Example query (you can replace this with actual user input)
     query = "What is the main benefit of using RAG?"
