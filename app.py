@@ -3,7 +3,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.docstore.document import Document
-from langchain.chains.qa_with_sources import load_qa_with_sources_chain
+from langchain.chains import RetrievalQA
 
 # Function to generate responses using RAG
 def generate_response(documents, api_key):
@@ -21,12 +21,12 @@ def generate_response(documents, api_key):
         
         st.write("Creating QA chain...")
         llm = OpenAI(api_key=api_key)
-        qa_chain = load_qa_with_sources_chain(llm=llm, retriever=retriever)
+        qa_chain = RetrievalQA(llm=llm, retriever=retriever)
         
         # Example query (you can replace this with actual user input)
         query = "What is the main benefit of using RAG?"
         st.write(f"Running query: {query}")
-        response = qa_chain({"query": query})
+        response = qa_chain.run(query)
         
         return response
     except Exception as e:
