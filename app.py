@@ -1,10 +1,9 @@
 import streamlit as st
-from openai.embeddings_utils import get_embedding
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.docstore.document import Document
-from langchain.chains import ConversationalRetrievalChain, combine_docs_chain, question_generator_chain
+from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 
 # Function to generate responses using RAG
 def generate_response(documents, api_key):
@@ -20,23 +19,14 @@ def generate_response(documents, api_key):
         st.write("Creating retriever interface...")
         retriever = db.as_retriever()
         
-        st.write("Creating Conversational Retrieval Chain...")
+        st.write("Creating QA chain...")
         llm = OpenAI(api_key=api_key)
-        
-        # Setup the combine_docs_chain and question_generator_chain
-        combine_docs = combine_docs_chain(llm=llm)
-        question_generator = question_generator_chain(llm=llm)
-        
-        conv_chain = ConversationalRetrievalChain(
-            combine_docs_chain=combine_docs,
-            question_generator=question_generator,
-            retriever=retriever
-        )
+        qa_chain = load_qa_with_sources_chain(llm=llm, retriever=retriever)
         
         # Example query (you can replace this with actual user input)
         query = "What is the main benefit of using RAG?"
         st.write(f"Running query: {query}")
-        response = conv_chain.run(query)
+        response = qa_chain({"query": query})
         
         return response
     except Exception as e:
