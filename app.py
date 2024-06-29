@@ -4,7 +4,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.docstore.document import Document
-from langchain.chains.qa import load_qa_chain
+from langchain.chains import ConversationalRetrievalChain
 
 # Function to generate responses using RAG
 def generate_response(documents, api_key):
@@ -19,13 +19,13 @@ def generate_response(documents, api_key):
     # Create retriever interface
     retriever = db.as_retriever()
     
-    # Create QA chain
+    # Create Conversational Retrieval Chain
     llm = OpenAI(api_key=api_key)
-    qa_chain = load_qa_chain(llm, retriever=retriever)
+    conv_chain = ConversationalRetrievalChain(llm=llm, retriever=retriever)
     
     # Example query (you can replace this with actual user input)
     query = "What is the main benefit of using RAG?"
-    response = qa_chain.run(query)
+    response = conv_chain.run(query)
     
     return response
 
@@ -38,13 +38,4 @@ uploaded_file = st.file_uploader("Upload a document", type=["txt"])
 
 if uploaded_file and openai_api_key:
     st.write("File uploaded successfully.")
-    
-    # Read the file
-    content = uploaded_file.read().decode("utf-8")
-    documents = [Document(page_content=content, metadata={"filename": uploaded_file.name})]
-    
-    if st.button("Generate Response"):
-        with st.spinner("Calculating..."):
-            response = generate_response(documents, openai_api_key)
-            st.write("Response:")
-            st.write(response)
+   
