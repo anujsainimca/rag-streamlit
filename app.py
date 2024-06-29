@@ -4,6 +4,11 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
+import sqlite3
+import pysqlite3
+
+# Override the default sqlite3 module
+sqlite3.dbapi2 = pysqlite3
 
 def generate_response(uploaded_file, openai_api_key, query_text):
     # Load document if file is uploaded
